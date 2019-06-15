@@ -21,8 +21,8 @@ def createGraphsHolder(parent):
     graphsFrame.grid_rowconfigure(0, weight=1)
     graphsFrame.grid_columnconfigure(0, weight=1)
 
-    def createGraph(parent, texT=None, heighT=160, bG="white"):
-        """create the plot/graph area"""
+    def createGraph(parent, texT=None, heighT=155, bG="white"):
+        """create the plot/graph area for the graphs"""
         gFrame = LabelFrame(parent, text=texT,
                                 height=heighT, bg=bG)
         return gFrame
@@ -34,7 +34,7 @@ def createGraphsHolder(parent):
     paneGraphs.add(createGraph(paneGraphs, texT="graph3", bG="yellow"), minsize=50)
     paneGraphs.grid(row=0, sticky='news')
 
-    graphsFrame.config(height=640, padx=5, pady=5) #important for maintainance of height
+    graphsFrame.config(height=640, padx=5, pady=5) #important for maintainance of height of the graphs frame container
     return graphsFrame
 
 def createChanelsHolder(parent):
@@ -115,7 +115,8 @@ def createChanelsHolder(parent):
     mtrFrame0.pack(pady=5, padx=5)
 
     # create a holder for Chanel 1 Controls
-    mtrFrame1 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch1", font=12, bg="green"),
+    mtrFrame1 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch1", font=12, bg="green", variable=mtrFrame1Var,
+                                                                command=lambda: print(mtrFrame1Var.get())),
                             width=100, height=150, bg="green")
 
     fm1 = Frame(mtrFrame1)
@@ -140,7 +141,8 @@ def createChanelsHolder(parent):
     mtrFrame1.pack(pady=5, padx=5)
 
     # create a holder for Chanel 2 Controls
-    mtrFrame2 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch2", font=12, bg="blue"),
+    mtrFrame2 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch2", font=12, bg="blue", variable=mtrFrame2Var,
+                                                                command=lambda: print(mtrFrame2Var.get())),
                             width=100, height=150, bg="blue")
     
     fm1 = Frame(mtrFrame2)
@@ -165,7 +167,8 @@ def createChanelsHolder(parent):
     mtrFrame2.pack(pady=5, padx=5)
 
     # create a holder for Chanel 3 Controls
-    mtrFrame3 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch3", font=12, bg="yellow"),
+    mtrFrame3 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch3", font=12, bg="yellow", variable=mtrFrame3Var,
+                                                                command=lambda: print(mtrFrame3Var.get())),
                             width=100, height=150, bg="yellow")
     
     fm1 = Frame(mtrFrame3)
@@ -195,10 +198,16 @@ def createChanelsHolder(parent):
 
 def main():
 
+    # global variables
+        # createChanelsHolder Variables
     global mtrFrame0Var, ch0TrigCheckVar, ch0MeasureCheckVar, ch0CurveCheckVar, ch0V_DivSclVar,\
             mtrFrame1Var, ch1TrigCheckVar, ch1MeasureCheckVar, ch1CurveCheckVar, ch1V_DivSclVar,\
             mtrFrame2Var, ch2TrigCheckVar, ch2MeasureCheckVar, ch2CurveCheckVar, ch2V_DivSclVar,\
             mtrFrame3Var, ch3TrigCheckVar, ch3MeasureCheckVar, ch3CurveCheckVar, ch3V_DivSclVar
+
+    
+        # Signal Generator Vars
+    global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
 
     root = Tk()
     root.geometry(SIZE)
@@ -208,18 +217,20 @@ def main():
     root.grid_columnconfigure(0, weight=1)
 
     # tkinter variables
+        # createChanelsHolder Variables
     mtrFrame0Var = IntVar(); ch0TrigCheckVar = IntVar(); ch0MeasureCheckVar = IntVar(); ch0CurveCheckVar = IntVar(); ch0V_DivSclVar = IntVar()
     mtrFrame1Var = IntVar(); ch1TrigCheckVar = IntVar(); ch1MeasureCheckVar = IntVar(); ch1CurveCheckVar = IntVar(); ch1V_DivSclVar = IntVar()
     mtrFrame2Var = IntVar(); ch2TrigCheckVar = IntVar(); ch2MeasureCheckVar = IntVar(); ch2CurveCheckVar = IntVar(); ch2V_DivSclVar = IntVar()
     mtrFrame3Var = IntVar(); ch3TrigCheckVar = IntVar(); ch3MeasureCheckVar = IntVar(); ch3CurveCheckVar = IntVar(); ch3V_DivSclVar = IntVar()
+        # Signal Generator makeControls_Options_FileIOFrame Variables
+    sgnlFrameVar = IntVar(); sgnlFreqScaleVar = IntVar(); sgnlPeriodScaleVar = IntVar() ; sgnlt_onScaleVar = IntVar()
     ##########################################
-    
 
     menubar = createMenuBar(root)
 
     paneMain = PanedWindow(orient=VERTICAL, sashwidth=5, sashrelief=SOLID, bg='#ddd')
     paneMain.add(makeGraph_ChanelsFrame(paneMain), minsize=620)
-    paneMain.add(makeControls_Options_FileIOFrame(paneMain), minsize=100)
+    paneMain.add(makeControls_Options_FileIOFrame(paneMain), minsize=120)
     paneMain.grid(row=0, sticky='news')
 
     root.config(menu=menubar)
@@ -256,6 +267,23 @@ def makeGraph_ChanelsFrame(parent):
 def makeControls_Options_FileIOFrame(parent):
     """create a holder for the Meter, Sampling controls, Data save, Signal generator"""
 
+        # Signal Gen Vars
+    global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
+
+    # Signal Gen Scroll Callback Functions
+    def sgnlFreqScaleCmd(val):
+         print("sigGen", val)
+         sgnlFreqScaleLable.config(text="f {} Hz".format(val))
+
+    def sgnlPeriodScaleCmd(val):
+         print("sigGen", val)
+         sgnlPeriodScaleLable.config(text="T {} ms".format(val))
+
+    def sgnlt_onScaleCmd(val):
+         print("sigGen", val)
+         sgnlt_onScaleLable.config(text="T_on {}%".format(val))
+
+
     mainFrameOptions = LabelFrame(parent, bg="blue", width=750)
     mainFrameOptions.grid_rowconfigure(0, weight=1)
     mainFrameOptions.grid_columnconfigure(0, weight=1)
@@ -265,7 +293,27 @@ def makeControls_Options_FileIOFrame(parent):
     mtrFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
 
     # create a holder for the Signal Generator
-    sgnlFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text="Signal Gen"), width=100)
+    sgnlFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text="Signal Gen", variable=sgnlFrameVar , command=lambda: print(sgnlFrameVar.get())), width=100)
+
+    fm1 = Frame(sgnlFrame)
+    sgnlFreqScale = Scale(fm1, orient=HORIZONTAL, from_=1, to=20, sliderlength=10, showvalue=0, command=sgnlFreqScaleCmd, variable=sgnlFreqScaleVar)  # Frequency Scale
+    sgnlFreqScale.pack(side=LEFT)
+    sgnlFreqScaleLable = Label(fm1, text="f {} Hz".format(sgnlFreqScaleVar.get()))
+    sgnlFreqScaleLable.pack(side=LEFT)
+    fm1.pack()
+    fm2 = Frame(sgnlFrame)
+    sgnlPeriodScale = Scale(fm2, orient=HORIZONTAL, from_=1, to=20, sliderlength=10, showvalue=0, command=sgnlPeriodScaleCmd, variable=sgnlPeriodScaleVar)  # Period Scale 
+    sgnlPeriodScale.pack(side=LEFT)
+    sgnlPeriodScaleLable = Label(fm2, text="T {} ms".format(sgnlPeriodScaleVar.get()))
+    sgnlPeriodScaleLable.pack(side=LEFT)
+    fm2.pack()
+    fm3 = Frame(sgnlFrame)
+    sgnlt_onScale = Scale(fm3, orient=HORIZONTAL, from_=1, to=20, sliderlength=10, showvalue=0, command=sgnlt_onScaleCmd, variable=sgnlt_onScaleVar) # Time on scale
+    sgnlt_onScale.pack(side=LEFT)
+    sgnlt_onScaleLable = Label(fm3, text="T_on {}%".format(sgnlt_onScaleVar.get()))
+    sgnlt_onScaleLable.pack(side=LEFT)
+    fm3.pack()
+
     sgnlFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
 
     # create a holder for the Sampling Controls
