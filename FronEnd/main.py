@@ -195,48 +195,6 @@ def createChanelsHolder(parent):
     chCntrlFrame.config(height=640) #important for maintainance of height
     return chCntrlFrame
        
-
-def main():
-
-    # global variables
-        # createChanelsHolder Variables
-    global mtrFrame0Var, ch0TrigCheckVar, ch0MeasureCheckVar, ch0CurveCheckVar, ch0V_DivSclVar,\
-            mtrFrame1Var, ch1TrigCheckVar, ch1MeasureCheckVar, ch1CurveCheckVar, ch1V_DivSclVar,\
-            mtrFrame2Var, ch2TrigCheckVar, ch2MeasureCheckVar, ch2CurveCheckVar, ch2V_DivSclVar,\
-            mtrFrame3Var, ch3TrigCheckVar, ch3MeasureCheckVar, ch3CurveCheckVar, ch3V_DivSclVar
-
-    
-        # Signal Generator Vars
-    global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
-
-    root = Tk()
-    root.geometry(SIZE)
-    root.title("Arduino Oscilloscope")
-    # root.iconbitmap(default="Assets\youtube-dl-gui.bmp", )
-    root.grid_rowconfigure(0, weight=1)
-    root.grid_columnconfigure(0, weight=1)
-
-    # tkinter variables
-        # createChanelsHolder Variables
-    mtrFrame0Var = IntVar(); ch0TrigCheckVar = IntVar(); ch0MeasureCheckVar = IntVar(); ch0CurveCheckVar = IntVar(); ch0V_DivSclVar = IntVar()
-    mtrFrame1Var = IntVar(); ch1TrigCheckVar = IntVar(); ch1MeasureCheckVar = IntVar(); ch1CurveCheckVar = IntVar(); ch1V_DivSclVar = IntVar()
-    mtrFrame2Var = IntVar(); ch2TrigCheckVar = IntVar(); ch2MeasureCheckVar = IntVar(); ch2CurveCheckVar = IntVar(); ch2V_DivSclVar = IntVar()
-    mtrFrame3Var = IntVar(); ch3TrigCheckVar = IntVar(); ch3MeasureCheckVar = IntVar(); ch3CurveCheckVar = IntVar(); ch3V_DivSclVar = IntVar()
-        # Signal Generator makeControls_Options_FileIOFrame Variables
-    sgnlFrameVar = IntVar(); sgnlFreqScaleVar = IntVar(); sgnlPeriodScaleVar = IntVar() ; sgnlt_onScaleVar = IntVar()
-    ##########################################
-
-    menubar = createMenuBar(root)
-
-    paneMain = PanedWindow(orient=VERTICAL, sashwidth=5, sashrelief=SOLID, bg='#ddd')
-    paneMain.add(makeGraph_ChanelsFrame(paneMain), minsize=620)
-    paneMain.add(makeControls_Options_FileIOFrame(paneMain), minsize=120)
-    paneMain.grid(row=0, sticky='news')
-
-    root.config(menu=menubar)
-    # root.resizable(0,0)
-    root.mainloop()
-
 def createMenuBar(parent):
 
     menubar = Menu(parent, font=MENUFONT)
@@ -267,9 +225,12 @@ def makeGraph_ChanelsFrame(parent):
 def makeControls_Options_FileIOFrame(parent):
     """create a holder for the Meter, Sampling controls, Data save, Signal generator"""
 
-        # Signal Gen Vars
+    # Signal Gen Vars
     global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
+    # Sampling Vars
+    global smplDtScaleVar, smplQScaleVar, sgnlOnceCheckCheckVar, sgnlVariousCheckVar, sgnlFlowCheckVar, sgnlRealLableVar, sgnlTotalLableVar
 
+    ################Call Back Functions########################
     # Signal Gen Scroll Callback Functions
     def sgnlFreqScaleCmd(val):
          print("sigGen", val)
@@ -282,7 +243,16 @@ def makeControls_Options_FileIOFrame(parent):
     def sgnlt_onScaleCmd(val):
          print("sigGen", val)
          sgnlt_onScaleLable.config(text="T_on {}%".format(val))
+    # Sampling CallBack Functions
+    def smplDtScaleCmd(val):
+         print("samlpling", val)
+         smplDtScale.config(label="dt {}ms".format(val))
+    
+    def smplQScaleCmd(val):
+         print("sampling", val)
+         smplQScale.config(label="q {}".format(val))
 
+    ###########################################################
 
     mainFrameOptions = LabelFrame(parent, bg="blue", width=750)
     mainFrameOptions.grid_rowconfigure(0, weight=1)
@@ -318,6 +288,27 @@ def makeControls_Options_FileIOFrame(parent):
 
     # create a holder for the Sampling Controls
     smplFrame = LabelFrame(mainFrameOptions, text="Sampling Controls", width=200)
+
+    fm1 = Frame(smplFrame)
+    smplDtScale = Scale(fm1, orient=HORIZONTAL, from_=1, to=20, label="dt {}ms".format(smplDtScaleVar.get()), sliderlength=10, showvalue=0, command=smplDtScaleCmd, variable=smplDtScaleVar) # Sampling dt Scale
+    smplDtScale.pack(side=LEFT)
+    smplQScale = Scale(fm1, orient=HORIZONTAL, from_=1, to=20, label="q {}".format(smplQScaleVar.get()), sliderlength=10, showvalue=0, command=smplQScaleCmd, variable=smplQScaleVar) # Sampling q Scale
+    smplQScale.pack(side=LEFT)
+    fm1.pack()
+    fm2 = Frame(smplFrame)
+    sgnlOnceCheck = Checkbutton(fm2, text="once", indicatoron=0, variable=sgnlOnceCheckCheckVar, command=lambda: print(sgnlOnceCheckCheckVar.get()))
+    sgnlOnceCheck.pack(side=LEFT, padx=2, pady=5)
+    sgnlVariousCheck = Checkbutton(fm2, text="various", indicatoron=0, variable=sgnlVariousCheckVar, command=lambda: print(sgnlVariousCheckVar.get()))
+    sgnlVariousCheck.pack(side=LEFT, padx=2, pady=5)
+    sgnlFlowCheck = Checkbutton(fm2, text="flow", indicatoron=0, variable=sgnlFlowCheckVar, command=lambda: print(sgnlFlowCheckVar.get()))
+    sgnlFlowCheck.pack(side=LEFT, padx=2, pady=5)
+    fm2.pack()
+    fm3 = Frame(smplFrame)
+    sgnlRealLable = Label(fm3, text="f {} Hz".format(sgnlRealLableVar.get()))
+    sgnlRealLable.pack(side=LEFT)
+    sgnlTotalLable = Label(fm3, text="f {} Hz".format(sgnlTotalLableVar.get()))
+    sgnlTotalLable.pack(side=LEFT)
+    fm3.pack()
     smplFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
 
     # create a holder for the SeePoints, DetectFreq, SaveData Controls
@@ -329,6 +320,51 @@ def makeControls_Options_FileIOFrame(parent):
     xyzFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
         
     return mainFrameOptions
+
+def main():
+
+    ############# global variables ###########################
+    # createChanelsHolder Variables
+    global mtrFrame0Var, ch0TrigCheckVar, ch0MeasureCheckVar, ch0CurveCheckVar, ch0V_DivSclVar,\
+            mtrFrame1Var, ch1TrigCheckVar, ch1MeasureCheckVar, ch1CurveCheckVar, ch1V_DivSclVar,\
+            mtrFrame2Var, ch2TrigCheckVar, ch2MeasureCheckVar, ch2CurveCheckVar, ch2V_DivSclVar,\
+            mtrFrame3Var, ch3TrigCheckVar, ch3MeasureCheckVar, ch3CurveCheckVar, ch3V_DivSclVar
+    # Signal Generator Vars
+    global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
+    # Sampling Vars
+    global smplDtScaleVar, smplQScaleVar, sgnlOnceCheckCheckVar, sgnlVariousCheckVar, sgnlFlowCheckVar, sgnlRealLableVar, sgnlTotalLableVar
+
+    #########################################################
+
+    root = Tk()
+    root.geometry(SIZE)
+    root.title("Arduino Oscilloscope")
+    # root.iconbitmap(default="Assets\youtube-dl-gui.bmp", )
+    root.grid_rowconfigure(0, weight=1)
+    root.grid_columnconfigure(0, weight=1)
+
+    ################# tkinter variables ###########################
+        # createChanelsHolder Variables
+    mtrFrame0Var = IntVar(); ch0TrigCheckVar = IntVar(); ch0MeasureCheckVar = IntVar(); ch0CurveCheckVar = IntVar(); ch0V_DivSclVar = IntVar()
+    mtrFrame1Var = IntVar(); ch1TrigCheckVar = IntVar(); ch1MeasureCheckVar = IntVar(); ch1CurveCheckVar = IntVar(); ch1V_DivSclVar = IntVar()
+    mtrFrame2Var = IntVar(); ch2TrigCheckVar = IntVar(); ch2MeasureCheckVar = IntVar(); ch2CurveCheckVar = IntVar(); ch2V_DivSclVar = IntVar()
+    mtrFrame3Var = IntVar(); ch3TrigCheckVar = IntVar(); ch3MeasureCheckVar = IntVar(); ch3CurveCheckVar = IntVar(); ch3V_DivSclVar = IntVar()
+        # Signal Generator makeControls_Options_FileIOFrame Variables
+    sgnlFrameVar = IntVar(); sgnlFreqScaleVar = IntVar(); sgnlPeriodScaleVar = IntVar() ; sgnlt_onScaleVar = IntVar()
+        # Sampling makeControls_Options_FileIOFrame Variables
+    smplDtScaleVar = IntVar(); smplQScaleVar = IntVar(); sgnlOnceCheckCheckVar = IntVar(); sgnlVariousCheckVar = IntVar(); sgnlFlowCheckVar = IntVar(); sgnlRealLableVar = IntVar(); sgnlTotalLableVar = IntVar()
+    #############################################################
+
+    menubar = createMenuBar(root)
+
+    paneMain = PanedWindow(orient=VERTICAL, sashwidth=5, sashrelief=SOLID, bg='#ddd')
+    paneMain.add(makeGraph_ChanelsFrame(paneMain), minsize=620)
+    paneMain.add(makeControls_Options_FileIOFrame(paneMain), minsize=120)
+    paneMain.grid(row=0, sticky='news')
+
+    root.config(menu=menubar)
+    # root.resizable(0,0)
+    root.mainloop()
 
 if __name__ == "__main__":
     
