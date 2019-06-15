@@ -90,7 +90,7 @@ def createChanelsHolder(parent):
 
     # create a holder for Chanel 0 Controls
     mtrFrame0 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch0", background='red', font=12,
-                                                                variable=mtrFrame0Var, command=lambda: print(mtrFrame0Var.get())),
+                                                                variable=mtrFrame0Var, command=lambda: print("ch0", mtrFrame0Var.get())),
                             width=100, height=150, bg="red")
     
     fm1 = Frame(mtrFrame0)
@@ -116,7 +116,7 @@ def createChanelsHolder(parent):
 
     # create a holder for Chanel 1 Controls
     mtrFrame1 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch1", font=12, bg="green", variable=mtrFrame1Var,
-                                                                command=lambda: print(mtrFrame1Var.get())),
+                                                                command=lambda: print("ch1", mtrFrame1Var.get())),
                             width=100, height=150, bg="green")
 
     fm1 = Frame(mtrFrame1)
@@ -142,7 +142,7 @@ def createChanelsHolder(parent):
 
     # create a holder for Chanel 2 Controls
     mtrFrame2 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch2", font=12, bg="blue", variable=mtrFrame2Var,
-                                                                command=lambda: print(mtrFrame2Var.get())),
+                                                                command=lambda: print("ch2", mtrFrame2Var.get())),
                             width=100, height=150, bg="blue")
     
     fm1 = Frame(mtrFrame2)
@@ -168,7 +168,7 @@ def createChanelsHolder(parent):
 
     # create a holder for Chanel 3 Controls
     mtrFrame3 = LabelFrame(chCntrlFrame, labelwidget=Checkbutton(text="ch3", font=12, bg="yellow", variable=mtrFrame3Var,
-                                                                command=lambda: print(mtrFrame3Var.get())),
+                                                                command=lambda: print("ch3", mtrFrame3Var.get())),
                             width=100, height=150, bg="yellow")
     
     fm1 = Frame(mtrFrame3)
@@ -222,15 +222,56 @@ def makeGraph_ChanelsFrame(parent):
 
     return mainFrameChanels
 
+class XYZ_PlotTopLevel():
+    """create a top level widget to plot the XYZ graph on"""
+
+    def create(self):
+
+        global xyzTopLevel
+
+        print("XYZ PLOTING TOP LEVEL")
+
+        xyzTopLevel = Toplevel(root)
+        xyzTopLevel.geometry("500x500+100+100")
+        xyzTopLevel.title("Arduino Oscilloscope - XYZ PLOT")
+        # xyzTopLevel.iconbitmap(default="Assets\youtube-dl-gui.bmp", )
+        xyzTopLevel.grid_rowconfigure(0, weight=1)
+        xyzTopLevel.grid_columnconfigure(0, weight=1)
+
+    
+        return xyzTopLevel
+    
+    def _destroy(self):
+
+        xyzTopLevel.destroy()
+
 def makeControls_Options_FileIOFrame(parent):
     """create a holder for the Meter, Sampling controls, Data save, Signal generator"""
 
     # Signal Gen Vars
     global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
     # Sampling Vars
-    global smplDtScaleVar, smplQScaleVar, sgnlOnceCheckCheckVar, sgnlVariousCheckVar, sgnlFlowCheckVar, sgnlRealLableVar, sgnlTotalLableVar
+    global smplDtScaleVar, smplQScaleVar, sgnlRealLableVar, sgnlTotalLableVar, smplFlowTypeRadioVar
+    # Save File Frame Vars
+    global saveSeePntsCheckVar, saveDetFrqCheckVar, saveVerCheckVar
+    # XYZ Vars
+    global xyzFrameVar, xyzV_DivScaleVar, xyzSftCrvCheckVar, xyvViwChnlsCheckVar
 
     ################Call Back Functions########################
+    # XYZ Frame Call Back
+    def xyzFrameCmd():
+        print("xyz", xyzFrameVar.get())
+        val = xyzFrameVar.get()
+
+        topl = XYZ_PlotTopLevel()
+        
+        if val == 1:
+            xyzV_DivScale.config(state=NORMAL); xyzSftCrvCheck.config(state=NORMAL); xyvViwChnlsCheck.config(state=NORMAL)
+            topl.create()
+        else:
+            xyzV_DivScale.config(state=DISABLED); xyzSftCrvCheck.config(state=DISABLED); xyvViwChnlsCheck.config(state=DISABLED)
+            topl._destroy()
+
     # Signal Gen Scroll Callback Functions
     def sgnlFreqScaleCmd(val):
          print("sigGen", val)
@@ -252,6 +293,15 @@ def makeControls_Options_FileIOFrame(parent):
          print("sampling", val)
          smplQScale.config(label="q {}".format(val))
 
+    def smplFlowTypeRadioCmd():
+        print(smplFlowTypeRadioVar.get())
+    # Save File CallBacks
+    def saveDataButtnCmd():
+        print("save file")
+    # XYZ Call Backs
+    def xyzV_DivScaleCmd(val):
+        print("xyz", val)
+        xyzV_DivScaleLable.config(text="{} V/Div".format(val))
     ###########################################################
 
     mainFrameOptions = LabelFrame(parent, bg="blue", width=750)
@@ -263,7 +313,7 @@ def makeControls_Options_FileIOFrame(parent):
     mtrFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
 
     # create a holder for the Signal Generator
-    sgnlFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text="Signal Gen", variable=sgnlFrameVar , command=lambda: print(sgnlFrameVar.get())), width=100)
+    sgnlFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text="Signal Gen", variable=sgnlFrameVar , command=lambda: print("sgnlGen", sgnlFrameVar.get())), width=100)
 
     fm1 = Frame(sgnlFrame)
     sgnlFreqScale = Scale(fm1, orient=HORIZONTAL, from_=1, to=20, sliderlength=10, showvalue=0, command=sgnlFreqScaleCmd, variable=sgnlFreqScaleVar)  # Frequency Scale
@@ -296,34 +346,62 @@ def makeControls_Options_FileIOFrame(parent):
     smplQScale.pack(side=LEFT)
     fm1.pack()
     fm2 = Frame(smplFrame)
-    sgnlOnceCheck = Checkbutton(fm2, text="once", indicatoron=0, variable=sgnlOnceCheckCheckVar, command=lambda: print(sgnlOnceCheckCheckVar.get()))
-    sgnlOnceCheck.pack(side=LEFT, padx=2, pady=5)
-    sgnlVariousCheck = Checkbutton(fm2, text="various", indicatoron=0, variable=sgnlVariousCheckVar, command=lambda: print(sgnlVariousCheckVar.get()))
-    sgnlVariousCheck.pack(side=LEFT, padx=2, pady=5)
-    sgnlFlowCheck = Checkbutton(fm2, text="flow", indicatoron=0, variable=sgnlFlowCheckVar, command=lambda: print(sgnlFlowCheckVar.get()))
-    sgnlFlowCheck.pack(side=LEFT, padx=2, pady=5)
+    smplFlowTypeRadio = Radiobutton(fm2, text="ONCE", variable=smplFlowTypeRadioVar, value="once", indicatoron=0, command=smplFlowTypeRadioCmd)
+    smplFlowTypeRadio.pack(side=LEFT, padx=5)
+    smplFlowTypeRadio = Radiobutton(fm2, text="VARIOUS", variable=smplFlowTypeRadioVar, value="various", indicatoron=0, command=smplFlowTypeRadioCmd)
+    smplFlowTypeRadio.pack(side=LEFT)
+    smplFlowTypeRadio = Radiobutton(fm2, text="FLOW", variable=smplFlowTypeRadioVar, value="flow", indicatoron=0, command=smplFlowTypeRadioCmd)
+    smplFlowTypeRadio.pack(side=LEFT, padx=5)
     fm2.pack()
     fm3 = Frame(smplFrame)
-    sgnlRealLable = Label(fm3, text="f {} Hz".format(sgnlRealLableVar.get()))
+    sgnlRealLable = Label(fm3, text="Real: dt {}fs ".format(sgnlRealLableVar.get()))
     sgnlRealLable.pack(side=LEFT)
-    sgnlTotalLable = Label(fm3, text="f {} Hz".format(sgnlTotalLableVar.get()))
+    sgnlTotalLable = Label(fm3, text="total : {}fs".format(sgnlTotalLableVar.get()))
     sgnlTotalLable.pack(side=LEFT)
     fm3.pack()
     smplFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
 
     # create a holder for the SeePoints, DetectFreq, SaveData Controls
-    svelFrame = LabelFrame(mainFrameOptions, text="For SaveDAta", width=200)
-    svelFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
+    saveFrame = LabelFrame(mainFrameOptions, text="", width=200)
 
+    saveSeePntsCheck = Checkbutton(saveFrame, text="See Points", indicatoron=1, variable=saveSeePntsCheckVar, command=lambda: print(saveSeePntsCheckVar.get()))
+    saveSeePntsCheck.pack(anchor="w")
+    fm1 = Frame(saveFrame)
+    saveDetFrqCheck = Checkbutton(fm1, text="Detect Freq", indicatoron=1, variable=saveDetFrqCheckVar, command=lambda: print(saveDetFrqCheckVar.get()))
+    saveDetFrqCheck.pack(side=LEFT)
+    saveVerCheck = Checkbutton(fm1, text="ver", indicatoron=1, variable=saveVerCheckVar, command=lambda: print(saveVerCheckVar.get()))
+    saveVerCheck.pack(side=LEFT)
+    fm1.pack()
+    saveDataButtn = Button(saveFrame, text="Save Data", width=15, relief=GROOVE, command=saveDataButtnCmd)
+    saveDataButtn.pack(pady=5)
+    
+    saveFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
+    
     # create a holder for the XYZ Chanel Controls
-    xyzFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text="XYZ Chn"), width=200)
-    xyzFrame.pack(side=LEFT, anchor="w", fill=Y, pady=5, padx=5)
-        
+    xyzFrame = LabelFrame(mainFrameOptions, labelwidget=Checkbutton(text=" XYZ ", variable=xyzFrameVar , command=xyzFrameCmd, width=20))
+
+    fm1 = Frame(xyzFrame)
+    xyzV_DivScale = Scale(fm1, state=DISABLED, orient=HORIZONTAL, from_=1, to=20, sliderlength=10, showvalue=0, command=xyzV_DivScaleCmd, variable=xyzV_DivScaleVar) # Time on scale
+    xyzV_DivScale.pack(side=LEFT, padx=3)
+    xyzV_DivScaleLable = Label(fm1, text="{} V/Div".format(xyzV_DivScaleVar.get()))
+    xyzV_DivScaleLable.pack(side=LEFT)
+    fm1.pack(pady=5)
+    fm2 = Frame(xyzFrame)
+    xyzSftCrvCheck = Checkbutton(fm2, state=DISABLED, text="Soft Curves", indicatoron=1, variable=xyzSftCrvCheckVar, command=lambda: print(xyzSftCrvCheckVar.get()))
+    xyzSftCrvCheck.pack(side=BOTTOM, anchor="w")
+    xyvViwChnlsCheck = Checkbutton(fm2, state=DISABLED, text="View Channels", indicatoron=1, variable=xyvViwChnlsCheckVar, command=lambda: print(xyvViwChnlsCheckVar.get()))
+    xyvViwChnlsCheck.pack(side=BOTTOM, anchor="w")
+    fm2.pack(pady=5)
+
+    xyzFrame.pack(side=RIGHT, anchor="w", fill=Y, pady=5, padx=5)
+    
     return mainFrameOptions
 
 def main():
 
     ############# global variables ###########################
+    # global widgets
+    global root
     # createChanelsHolder Variables
     global mtrFrame0Var, ch0TrigCheckVar, ch0MeasureCheckVar, ch0CurveCheckVar, ch0V_DivSclVar,\
             mtrFrame1Var, ch1TrigCheckVar, ch1MeasureCheckVar, ch1CurveCheckVar, ch1V_DivSclVar,\
@@ -332,7 +410,11 @@ def main():
     # Signal Generator Vars
     global sgnlFrameVar, sgnlFreqScaleVar, sgnlPeriodScaleVar, sgnlt_onScaleVar
     # Sampling Vars
-    global smplDtScaleVar, smplQScaleVar, sgnlOnceCheckCheckVar, sgnlVariousCheckVar, sgnlFlowCheckVar, sgnlRealLableVar, sgnlTotalLableVar
+    global smplDtScaleVar, smplQScaleVar, sgnlRealLableVar, sgnlTotalLableVar, smplFlowTypeRadioVar
+    # Save File Frame Vars
+    global saveSeePntsCheckVar, saveDetFrqCheckVar, saveVerCheckVar
+    # XYZ Vars
+    global xyzFrameVar, xyzV_DivScaleVar, xyzSftCrvCheckVar, xyvViwChnlsCheckVar
 
     #########################################################
 
@@ -352,7 +434,11 @@ def main():
         # Signal Generator makeControls_Options_FileIOFrame Variables
     sgnlFrameVar = IntVar(); sgnlFreqScaleVar = IntVar(); sgnlPeriodScaleVar = IntVar() ; sgnlt_onScaleVar = IntVar()
         # Sampling makeControls_Options_FileIOFrame Variables
-    smplDtScaleVar = IntVar(); smplQScaleVar = IntVar(); sgnlOnceCheckCheckVar = IntVar(); sgnlVariousCheckVar = IntVar(); sgnlFlowCheckVar = IntVar(); sgnlRealLableVar = IntVar(); sgnlTotalLableVar = IntVar()
+    smplDtScaleVar = IntVar(); smplQScaleVar = IntVar(); sgnlRealLableVar = IntVar(); sgnlTotalLableVar = IntVar(); smplFlowTypeRadioVar = StringVar()
+        # Save File Frame makeControls_Options_FileIOFrame Vars
+    saveSeePntsCheckVar = IntVar(); saveDetFrqCheckVar = IntVar(); saveVerCheckVar = IntVar()
+        # XYZ makeControls_Options_FileIOFrame Vars
+    xyzFrameVar = IntVar(); xyzV_DivScaleVar = IntVar(); xyzSftCrvCheckVar = IntVar(); xyvViwChnlsCheckVar = IntVar()
     #############################################################
 
     menubar = createMenuBar(root)
