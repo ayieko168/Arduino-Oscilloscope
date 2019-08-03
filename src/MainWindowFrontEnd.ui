@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>1015</width>
-    <height>800</height>
+    <height>830</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -137,7 +137,7 @@
         <number>3</number>
        </property>
        <item>
-        <widget class="QGroupBox" name="Channel1GroupBox">
+        <widget class="QGroupBox" name="Channel1Check">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
@@ -198,6 +198,15 @@ background-color: rgb(255, 15, 19);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>2</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -274,6 +283,15 @@ background-color: rgb(255, 15, 19);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>10</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -419,7 +437,7 @@ background-color: rgb(255, 15, 19);</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="Channel2GroupBox">
+        <widget class="QGroupBox" name="Channel2Check">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
@@ -482,6 +500,15 @@ gridline-color: rgb(143, 143, 143);
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>2</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -558,6 +585,15 @@ gridline-color: rgb(143, 143, 143);
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>10</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -703,7 +739,7 @@ gridline-color: rgb(143, 143, 143);
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="Channel3GroupBox">
+        <widget class="QGroupBox" name="Channel3Check">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
@@ -764,6 +800,15 @@ background-color: rgb(0, 0, 255);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>2</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -840,6 +885,15 @@ background-color: rgb(0, 0, 255);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>10</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -985,7 +1039,7 @@ background-color: rgb(0, 0, 255);</string>
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="Channel4GroupBox">
+        <widget class="QGroupBox" name="Channel4Check">
          <property name="font">
           <font>
            <pointsize>10</pointsize>
@@ -1046,6 +1100,15 @@ background-color: rgb(0, 0, 255);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>2</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1122,6 +1185,15 @@ background-color: rgb(0, 0, 255);</string>
                <width>100</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>10</number>
              </property>
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -1334,6 +1406,15 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_9">
        <item>
         <widget class="QSlider" name="SigGenFreqSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>50</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1355,6 +1436,15 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <item>
         <widget class="QSlider" name="SigGenPeriodSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>20</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1376,6 +1466,15 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
        <item>
         <widget class="QSlider" name="SigGenDutyslider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>25</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1412,6 +1511,12 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_12">
        <item>
         <widget class="QSlider" name="SampConrolDTScale">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1433,6 +1538,15 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_13">
        <item>
         <widget class="QSlider" name="SampControlQScale">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>100</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1509,6 +1623,15 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_16">
        <item>
         <widget class="QSlider" name="XYZ_VDivSlider">
+         <property name="minimum">
+          <number>1</number>
+         </property>
+         <property name="maximum">
+          <number>100</number>
+         </property>
+         <property name="value">
+          <number>20</number>
+         </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
@@ -1693,10 +1816,10 @@ background-color: rgb(0, 0, 255);</string>
         </size>
        </property>
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(51, 255, 98);</string>
+        <string notr="true">background-color: rgb(255, 0, 0);</string>
        </property>
        <property name="text">
-        <string>Power ON</string>
+        <string>Power OFF</string>
        </property>
        <property name="checkable">
         <bool>true</bool>

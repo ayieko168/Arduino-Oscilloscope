@@ -1,37 +1,49 @@
-from PyQt4 import QtCore, QtGui
+from pyqtgraph.Qt import QtGui, QtCore
 import pyqtgraph as pg
+
+import collections
 import random
+import time
+import math
+import numpy as np
 
-class GraphWindow(QtGui.QMainWindow):
+class DynamicPlotter():
 
-    def __init__(self, parent=None):
-        super().__init__()
-        self.central_widget = QtGui.QStackedWidget()
-        self.setCentralWidget(self.central_widget)
-        self.login_widget = LoginWidget(self)
-        self.login_widget.button.clicked.connect(self.plotter)
-        self.central_widget.addWidget(self.login_widget)
-
-    def plotter(self):
-        self.data =[0]
-        self.curve = self.login_widget.plot.getPlotItem().plot()
-
+    def __init__(self, sampleinterval=0.1, timewindow=10., size=(600,350)):
+        
+        # Data stuff
+        self._interval = int(sampleinterval*1000)
+        self._bufsize = int(timewindow/sampleinterval)
+        self.databuffer = collections.deque([0.0]*self._bufsize, self._bufsize)
+        self.x = np.linspace(-timewindow, 0.0, self._bufsize)
+        self.y = np.zeros(self._bufsize, dtype=np.float)
+        # PyQtGraph stuff
+        # self.app = QtGui.QApplication([])
+        self.plt = pg.plot(title='Dynamic Plotting with PyQtGraph')
+        self.plt.resize(*size)
+        self.plt.showGrid(x=True, y=True)
+        self.plt.setLabel('left', 'amplitude', 'V')
+        self.plt.setLabel('bottom', 'time', 's')
+        self.curve = self.plt.plot(self.x, self.y, pen=(255,0,0))
+        # QTimer
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.updater)
-        self.timer.start(0)
+        self.timer.timeout.connect(self.updateplot)
+        self.timer.start(self._interval)
 
-    def updater(self):
+        return self.plt
 
-        self.data.append(self.data[-1]+0.2*(0.5-random.random()) )
-        self.curve.setData(self.data)
+    def getdata(self):
+        frequency = 0.5
+        noise = random.normalvariate(0., 1.)
+        new = 10.*math.sin(time.time()*frequency*2*math.pi) + noise
+        return new
 
-class LoginWidget(QtGui.QWidget):
-    def __init__(self, parent=None):
-        super(LoginWidget, self).__init__(parent)
-        layout = QtGui.QHBoxLayout()
-        self.button = QtGui.QPushButton('Start Plotting')
-        layout.addWidget(self.button)
-        self.plot = pg.PlotWidget()
-        layout.addWidget(self.plot)
-        self.setLayout(layout)
+    def updateplot(self):
+        self.databuffer.append( self.getdata() )
+        self.y[:] = self.databuffer
+        self.curve.setData(self.x, self.y)
+        # self.app.processEvents()
+
+    # def run(self):
+    #     self.app.exec_()
 
