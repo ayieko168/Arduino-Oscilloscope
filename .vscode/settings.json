@@ -1,7 +1,0 @@
-{
-    "editor.minimap.showSlider": "always",
-    "python.pythonPath": "C:\\Users\\royal state\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
-    "python.linting.pylintEnabled": true,
-    "python.linting.enabled": true,
-    "C_Cpp.errorSquiggles": "Disabled"
-}
