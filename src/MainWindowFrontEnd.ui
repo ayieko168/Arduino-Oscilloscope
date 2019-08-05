@@ -1433,14 +1433,29 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_9">
        <item>
         <widget class="QSlider" name="SigGenFreqSlider">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>119</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="minimum">
-          <number>1</number>
+          <number>125</number>
          </property>
          <property name="maximum">
-          <number>100</number>
+          <number>10000</number>
+         </property>
+         <property name="pageStep">
+          <number>1</number>
          </property>
          <property name="value">
-          <number>50</number>
+          <number>125</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1463,14 +1478,29 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_10">
        <item>
         <widget class="QSlider" name="SigGenPeriodSlider">
-         <property name="minimum">
-          <number>1</number>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="maximum">
+         <property name="minimumSize">
+          <size>
+           <width>119</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="minimum">
           <number>100</number>
          </property>
+         <property name="maximum">
+          <number>8000000</number>
+         </property>
+         <property name="pageStep">
+          <number>10</number>
+         </property>
          <property name="value">
-          <number>20</number>
+          <number>20000</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -1493,11 +1523,26 @@ background-color: rgb(0, 0, 255);</string>
       <layout class="QHBoxLayout" name="horizontalLayout_11">
        <item>
         <widget class="QSlider" name="SigGenDutyslider">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>119</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="minimum">
-          <number>1</number>
+          <number>0</number>
          </property>
          <property name="maximum">
           <number>100</number>
+         </property>
+         <property name="pageStep">
+          <number>1</number>
          </property>
          <property name="value">
           <number>25</number>
