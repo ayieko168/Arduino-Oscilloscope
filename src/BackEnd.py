@@ -1,16 +1,21 @@
+# Main Imports
 from PyQt4.QtGui import *
 from PyQt4 import QtCore
 from MainWindowFrontEnd import *
-from Graph2D import Plot2D
+from GraphUpdadeFunctions import Functions
 
-import numpy as np
-from numpy import arange, sin, cos, pi
-
-import random
+# System operation Imports
 import os
 import datetime
 
+# Graph Imports
+import pyqtgraph as pg
+import numpy as np
+from numpy import arange, sin, cos, pi
+
+# Other Imports
 import csv, json, xml
+import random
 
 def _map(value, in_min, in_max, out_min, out_max):
 
@@ -21,58 +26,25 @@ class Application(QMainWindow):
 
     def __init__(self):
 
-        global window1, window2, window3, window4
-
         super().__init__()
         self.MainUi = Ui_MainWindow()
         self.MainUi.setupUi(self)
         self.MainUi.toolBar.actionTriggered[QAction].connect(self.toolbtnpressed)
 
+        # Initialize Graphs
+        self.InitializeGraphs()
 
-        # Create The Graph Windows
-        window1 = self.createGraphs(1)
-        window2 = self.createGraphs(2)
-        window3 = self.createGraphs(3)
-        window4 = self.createGraphs(4)
-
-        def update():
-
-            y = np.random.randint(1,10,(1,20))[0]
-            x = [x for x in range(20)]
-            k.plot(x,y)
-
-            y1 = np.random.randint(1,10,(1,20))[0]
-            x1 = [x for x in range(20)]
-            kk.plot(x1,y1)
-
-            y2 = np.random.randint(1,10,(1,20))[0]
-            x2 = [x for x in range(20)]
-            kkk.plot(x2,y2)
-
-            y3 = np.random.randint(1,10,(1,20))[0]
-            x3 = [x for x in range(20)]
-            kkkk.plot(x3,y3)
-
-        a = Plot2D()
-        k = a.create(window1)
-        a1 = Plot2D()
-        kk = a1.create(window2)
-        a2 = Plot2D()
-        kkk = a2.create(window3)
-        a3 = Plot2D()
-        kkkk = a3.create(window4)
-
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(update)
-        self.timer.start(10)
-        
-
-        
         # Set Up Initial Label Values
         self.setupLabelValues()
 
         # Set Up and create The Tool Bar
         self.setupToolBar()
+
+        # MenuBar Connections
+        #### Demo Connections
+        self.MainUi.actionDemo1.toggled.connect(self.actionDemo1CMD)
+        self.MainUi.actionDemo2.toggled.connect(self.actionDemo2CMD)
+        self.MainUi.actionDemo3.toggled.connect(self.actionDemo3CMD)
 
         # Main Window Widgets connections 
         ### Check Buttons
@@ -98,15 +70,7 @@ class Application(QMainWindow):
         self.MainUi.SigGenFreqSlider.valueChanged.connect(self.SigGenFreqSliderCMD)
         self.MainUi.SigGenPeriodSlider.valueChanged.connect(self.SigGenPeriodSliderCMD)
         self.MainUi.SigGenDutyslider.valueChanged.connect(self.SigGenDutysliderCMD)
-        
-    def createGraphs(self, GraphNumber):
 
-        sub = QMdiSubWindow()
-        # sub.setWidget(self.my_plot)
-        sub.setWindowTitle("Channel"+str(GraphNumber))
-        self.MainUi.MDIWindows.addSubWindow(sub)
-
-        return sub
     
     def setupToolBar(self):
 
@@ -126,25 +90,135 @@ class Application(QMainWindow):
         retn = retn.text()
 
         if retn == "tileWindows":
-            self.MainUi.MDIWindows.tileSubWindows()
+            self.MainUi.Channel1GraphicsView.setGeometry(0, 0, 407, 295)
+            self.MainUi.Channel2GraphicsView.setGeometry(407, 0, 407, 295)
+            self.MainUi.Channel3GraphicsView.setGeometry(0, 295, 407, 295)
+            self.MainUi.Channel4GraphicsView.setGeometry(407, 295, 407, 295)
 
         elif retn == "cascadeWindows":
-            self.MainUi.MDIWindows.cascadeSubWindows()
+            pass
 
         elif retn == "horizontalTile":
-            self.MainUi.MDIWindows.tileSubWindows()
-
-            window1.setGeometry(0, 0, 806, 142)
-            window2.setGeometry(0, 142, 806, 142)
-            window3.setGeometry(0, 284, 806, 142)
-            window4.setGeometry(0, 426, 806, 142)
+            self.MainUi.Channel1GraphicsView.setGeometry(0, 0, 814, 147)
+            self.MainUi.Channel2GraphicsView.setGeometry(0, 147, 814, 147)
+            self.MainUi.Channel3GraphicsView.setGeometry(0, 294, 814, 147)
+            self.MainUi.Channel4GraphicsView.setGeometry(0, 441, 814, 147)
     
+    def InitializeGraphs(self):
+
+        global c1, c2, c3, c4, data1, data2, data3, data4, Funcs
+        
+        
+        # Set Graph Looks
+        ### Graph 1 Looks
+        self.MainUi.Channel1GraphicsView.plotItem.showGrid(True, True)
+        self.MainUi.Channel1GraphicsView.plotItem.hideAxis("bottom")
+        ### Graph 2 Looks
+        self.MainUi.Channel2GraphicsView.plotItem.showGrid(True, True)
+        self.MainUi.Channel2GraphicsView.plotItem.hideAxis("bottom")
+        ### Graph 3 Looks
+        self.MainUi.Channel3GraphicsView.plotItem.showGrid(True, True)
+        self.MainUi.Channel3GraphicsView.plotItem.hideAxis("bottom")
+        ### Graph 4 Looks
+        self.MainUi.Channel4GraphicsView.plotItem.showGrid(True, True)
+        self.MainUi.Channel4GraphicsView.plotItem.hideAxis("bottom")
+
+        # Initialize Graph Data
+        ### Graph 1 Data
+        data1 = np.array([1,4,5,3,np.inf,5,7,6,-np.inf,8,10,9,np.nan,-1,-2,0])
+        c1 = pg.PlotCurveItem(data1)
+        ### Graph 2 Data
+        data2 = np.array([1,4,5,3,np.inf,5,7,6,-np.inf,8,10,9,np.nan,-1,-2,0])
+        c2 = pg.PlotCurveItem(data2)
+        
+        ### Graph 3 Data
+        data3 = np.array([1,4,5,3,np.inf,5,7,6,-np.inf,8,10,9,np.nan,-1,-2,0])
+        c3 = pg.PlotCurveItem()
+        c3.setData(data3, symbol="o")
+        ### Graph 4 Data
+        data4 = []
+        c4 = pg.PlotCurveItem(data4)
+
+        # Initial Plot
+        ### Add Data To Graph 1
+        self.MainUi.Channel1GraphicsView.addItem(c1)
+        ### Add Data To Graph 2
+        self.MainUi.Channel2GraphicsView.addItem(c2)
+        ### Add Data To Graph 3
+        self.MainUi.Channel3GraphicsView.addItem(c3)
+        ### Add Data To Graph 4
+        self.MainUi.Channel4GraphicsView.addItem(c4)
+
+        Funcs = Functions(c1, c2, c3, c4, data1, data2, data3, data4, 10, 0)
+
+        self.timer = pg.QtCore.QTimer ()
+        self.timer.timeout.connect(self.GrapgUpdate)
+        self.timer.start(2000)
+
+    def GrapgUpdate(self):
+        """Callback Function for the Initialize Graphs method"""
+
+        global c1, c2, c3, c4, data2
+
+        print("update")
+        # data2.append([x for x in range])
+        c2.updateData(data2)
+        self.MainUi.Channel2GraphicsView.addItem(c2)
+
+    def actionDemo1CMD(self):
+        global c1, c2, c3, c4, data1, data2, data3, data4, fr, t
+
+        fr = 10
+        t = 0
+        
+        """Call Back For Demo1 MenuBar Option"""
+        if self.MainUi.actionDemo1.isChecked() == True:  # if Demo 1 is set..
+            # frist disable other buttons
+            self.MainUi.actionDemo2.setChecked(False)
+            self.MainUi.actionDemo3.setChecked(False)
+            # Then Other Stuff
+
+            
+            self.timer = pg.QtCore.QTimer()
+            self.timer.timeout.connect(self.actionDemoGraphUpdateMethod)
+            self.timer.start(2)
+    
+    def actionDemoGraphUpdateMethod(self):
+
+        if len(self.data4) == 1000:
+            self.data4.pop(self.data4.index(self.data4[0]))
+
+        self.data4.append(np.sin( 2 * np.pi * fr * t))
+        
+        t += 0.0001
+        self.c4.updateData(self.data4)
+
+        print("udem")
+
+    def actionDemo2CMD(self):
+        """Call Back For Demo2 MenuBar Option"""
+        if self.MainUi.actionDemo2.isChecked() == True:  # if Demo 2 is set..
+            # frist disable other buttons
+            self.MainUi.actionDemo1.setChecked(False)
+            self.MainUi.actionDemo3.setChecked(False)
+            # Then Other Stuff
+            #
+
+    def actionDemo3CMD(self):
+        """Call Back For Demo3 MenuBar Option"""
+        if self.MainUi.actionDemo3.isChecked() == True:  # if Demo 3 is set..
+            # frist disable other buttons
+            self.MainUi.actionDemo2.setChecked(False)
+            self.MainUi.actionDemo1.setChecked(False)
+            # Then Other Stuff
+            #
+
     def Channel1Checking(self):
 
         if self.MainUi.Channel1Check.isChecked() == True: # Enabled...
-            window1.show()
+            self.MainUi.Channel2GraphicsView.plotItem.show()
         else:
-            window1.hide()
+            self.MainUi.Channel2GraphicsView.plotItem.hide()
     
     def Channel2Checking(self):
 
